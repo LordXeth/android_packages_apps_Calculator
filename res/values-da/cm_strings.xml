@@ -14,12 +14,12 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_copyright">Copyright \u00A9 2013 CyanogenMod-projektet</string>
+    <string name="application_copyright">Copyright \u00A9 2013 CyanogenMod-projektet</string> 
     <string name="X">X</string>
     <string name="Y">Y</string>
-    <string name="arcsin">asin</string>
-    <string name="arccos">acos</string>
-    <string name="arctan">atan</string>
+    <string name="arcsin">sin^\u22121</string>
+    <string name="arccos">cos^\u22121</string>
+    <string name="arctan">tan^\u22121</string>
     <string name="dx">dX</string>
     <string name="dy">dY</string>
     <string name="solveForX">Løs for X</string>
@@ -29,14 +29,12 @@
     <string name="graph">Grafpanel</string>
     <string name="function">Funktionspanel</string>
     <string name="hexPanel">Hexpanel</string>
-    <string name="lock">Lås side</string>
-    <string name="unlock">Lås side op</string>
     <string name="copy">Kopiér \"%s\"</string>
     <string name="remove_from_history">Fjern fra historik</string>
     <string name="showHistory">Vis Historik</string>
     <string name="hideHistory">Skjul Historik</string>
     <string name="settings">Indstillinger</string>
-    <string name="det">det</string>
+    <string name="determinant">Det</string>
     <string name="eigenvalue">Egen</string>
     <string name="solve">Løs</string>
     <string name="dotProduct">Prik</string>
@@ -60,7 +58,6 @@
     <string name="pref_units">Enheder</string>
     <string name="pref_about">Om</string>
     <string name="returnToBasic">Vend tilbage til det grundlæggende panel</string>
-    <string name="digitGrouping">Gruppering af cifre</string>
     <string name="trigUnits">Trig. enheder</string>
     <string name="radians">RAD</string>
     <string name="degrees">GRD</string>

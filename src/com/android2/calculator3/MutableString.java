@@ -1,43 +1,45 @@
 package com.android2.calculator3;
 
 public class MutableString {
-    private String mText;
+    private String text;
 
-    public MutableString() {}
+    public MutableString() {
+
+    }
 
     public MutableString(String text) {
-        this.mText = text;
+        this.text = text;
     }
 
     public String getText() {
-        return mText;
+        return text;
     }
 
     public void setText(String text) {
-        this.mText = text;
+        this.text = text;
     }
 
     public int length() {
-        return mText.length();
+        return text.length();
     }
 
     public boolean isEmpty() {
-        return mText.isEmpty();
+        return text.isEmpty();
     }
 
     public String substring(int start) {
-        return mText.substring(start);
+        return text.substring(start);
     }
 
     public String substring(int start, int end) {
-        return mText.substring(start, end);
+        return text.substring(start, end);
     }
 
     public CharSequence subSequence(int start, int end) {
-        return mText.subSequence(start, end);
+        return text.subSequence(start, end);
     }
 
     public boolean startsWith(String prefix) {
-        return mText.startsWith(prefix);
+        return text.startsWith(prefix);
     }
 }

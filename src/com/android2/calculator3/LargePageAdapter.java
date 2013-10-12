@@ -2,6 +2,8 @@ package com.android2.calculator3;
 
 import org.achartengine.GraphicalView;
 
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,41 +11,63 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
-import com.android2.calculator3.BaseModule.Mode;
 import com.android2.calculator3.Calculator.LargePanel;
 import com.android2.calculator3.view.CalculatorViewPager;
 
-public class LargePageAdapter extends CalculatorPageAdapter {
-    private final ViewGroup mGraphPage;
-    private final ViewGroup mSimplePage;
-    final ViewGroup mMatrixPage;
-    private final CalculatorViewPager mParent;
+public class LargePageAdapter extends PagerAdapter {
+    private View mGraphPage;
+    private View mSimplePage;
+    View mMatrixPage;
+    private CalculatorViewPager mParent;
     private GraphicalView mGraphDisplay;
-    private final Graph mGraph;
-    private final Logic mLogic;
-    private int mCount = 0;
+
+    private Graph mGraph;
+    private Logic mLogic;
+
+    private int count = 0;
 
     public LargePageAdapter(CalculatorViewPager parent, Graph graph, Logic logic) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        mGraphPage = (ViewGroup) inflater.inflate(R.layout.graph_pad, parent, false);
-        mSimplePage = (ViewGroup) inflater.inflate(R.layout.simple_pad, parent, false);
-        mMatrixPage = (ViewGroup) inflater.inflate(R.layout.matrix_pad, parent, false);
+        final View graphPage = inflater.inflate(R.layout.graph_pad, parent, false);
+        final View simplePage = inflater.inflate(R.layout.simple_pad, parent, false);
+        final View matrixPage = inflater.inflate(R.layout.matrix_pad, parent, false);
 
+        mGraphPage = graphPage;
+        mSimplePage = simplePage;
+        mMatrixPage = matrixPage;
         mParent = parent;
         mGraph = graph;
         mLogic = logic;
         setOrder();
 
-        applyBannedResources(mLogic.mBaseModule.getMode());
+        switch(mLogic.mBaseModule.getMode()) {
+        case BINARY:
+            for(int i : mLogic.mBaseModule.bannedResourceInBinary) {
+                View v = mSimplePage.findViewById(i);
+                if(v != null) v.setEnabled(false);
+            }
+            break;
+        case DECIMAL:
+            for(int i : mLogic.mBaseModule.bannedResourceInDecimal) {
+                View v = mSimplePage.findViewById(i);
+                if(v != null) v.setEnabled(false);
+            }
+            break;
+        case HEXADECIMAL:
+            break;
+        }
     }
 
     @Override
     public int getCount() {
-        return mCount;
+        return count;
     }
 
     @Override
-    public View getViewAt(int position) {
+    public void startUpdate(View container) {}
+
+    @Override
+    public Object instantiateItem(View container, int position) {
         if(position == LargePanel.GRAPH.getOrder() && CalculatorSettings.graphPanel(mParent.getContext())) {
             if(mGraphDisplay == null) {
                 mGraphDisplay = mGraph.getGraph(mParent.getContext());
@@ -78,16 +102,40 @@ public class LargePageAdapter extends CalculatorPageAdapter {
             else {
                 mGraphDisplay.repaint();
             }
+            ((ViewGroup) container).addView(mGraphPage);
             return mGraphPage;
         }
         else if(position == LargePanel.BASIC.getOrder() && CalculatorSettings.basicPanel(mParent.getContext())) {
+            ((ViewGroup) container).addView(mSimplePage);
             return mSimplePage;
         }
         else if(position == LargePanel.MATRIX.getOrder() && CalculatorSettings.matrixPanel(mParent.getContext())) {
+            ((ViewGroup) container).addView(mMatrixPage);
             return mMatrixPage;
         }
         return null;
     }
+
+    @Override
+    public void destroyItem(View container, int position, Object object) {
+        ((ViewGroup) container).removeView((View) object);
+    }
+
+    @Override
+    public void finishUpdate(View container) {}
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return view == object;
+    }
+
+    @Override
+    public Parcelable saveState() {
+        return null;
+    }
+
+    @Override
+    public void restoreState(Parcelable state, ClassLoader loader) {}
 
     @Override
     public void notifyDataSetChanged() {
@@ -97,24 +145,18 @@ public class LargePageAdapter extends CalculatorPageAdapter {
     }
 
     private void setOrder() {
-        mCount = 0;
+        count = 0;
         if(CalculatorSettings.graphPanel(mParent.getContext())) {
-            LargePanel.GRAPH.setOrder(mCount);
-            mCount++;
+            LargePanel.GRAPH.setOrder(count);
+            count++;
         }
         if(CalculatorSettings.basicPanel(mParent.getContext())) {
-            LargePanel.BASIC.setOrder(mCount);
-            mCount++;
+            LargePanel.BASIC.setOrder(count);
+            count++;
         }
         if(CalculatorSettings.matrixPanel(mParent.getContext())) {
-            LargePanel.MATRIX.setOrder(mCount);
-            mCount++;
+            LargePanel.MATRIX.setOrder(count);
+            count++;
         }
-    }
-
-    private void applyBannedResources(Mode baseMode) {
-        applyBannedResourcesByPage(mLogic, mGraphPage, baseMode);
-        applyBannedResourcesByPage(mLogic, mSimplePage, baseMode);
-        applyBannedResourcesByPage(mLogic, mMatrixPage, baseMode);
     }
 }

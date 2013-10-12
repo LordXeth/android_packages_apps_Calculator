@@ -31,15 +31,16 @@ import android.graphics.Color;
 import android.graphics.Paint.Align;
 
 public class Graph {
+    private GraphicalView mChartView;
+    private XYMultipleSeriesDataset mDataset;
+    private XYMultipleSeriesRenderer mRenderer;
+    private XYSeries mSeries;
+    private Logic mLogic;
+
     private static final double MAX_HEIGHT_X = 10;
     private static final double MAX_HEIGHT_Y = 10;
     private static final double MIN_HEIGHT_X = -10;
     private static final double MIN_HEIGHT_Y = -10;
-
-    private GraphicalView mChartView;
-    private XYMultipleSeriesDataset mDataset;
-    private XYMultipleSeriesRenderer mRenderer;
-    private final Logic mLogic;
 
     public Graph(Logic l) {
         mLogic = l;
@@ -49,8 +50,16 @@ public class Graph {
         return mDataset;
     }
 
+    public XYSeries getSeries() {
+        return mSeries;
+    }
+
     public XYMultipleSeriesRenderer getRenderer() {
         return mRenderer;
+    }
+
+    public void setSeries(XYSeries series) {
+        mSeries = series;
     }
 
     public GraphicalView getGraph(Context context) {
@@ -93,12 +102,12 @@ public class Graph {
     }
 
     private void addXYSeries(XYMultipleSeriesDataset dataset, String title, double[] xValues, double[] yValues, int scale) {
-        XYSeries series = new XYSeries(title, scale);
+        mSeries = new XYSeries(title, scale);
         int seriesLength = xValues.length;
         for(int k = 0; k < seriesLength; k++) {
-            series.add(xValues[k], yValues[k]);
+            mSeries.add(xValues[k], yValues[k]);
         }
-        dataset.addSeries(series);
+        dataset.addSeries(mSeries);
     }
 
     private XYMultipleSeriesRenderer buildRenderer(Context context) {
@@ -110,8 +119,6 @@ public class Graph {
         renderer.setLegendHeight(22);
         renderer.setPointSize(5f);
         renderer.setMargins(new int[] { 20, 30, 15, 20 });
-        renderer.setMarginsColor(CalculatorSettings.useLightTheme(context) ? context.getResources().getColor(R.color.background_light) : context.getResources()
-                .getColor(R.color.background));
         renderer.setChartTitle("");
         renderer.setXTitle(context.getResources().getString(R.string.X));
         renderer.setYTitle(context.getResources().getString(R.string.Y));
@@ -119,11 +126,8 @@ public class Graph {
         renderer.setXAxisMax(Graph.MAX_HEIGHT_X);
         renderer.setYAxisMin(Graph.MIN_HEIGHT_Y);
         renderer.setYAxisMax(Graph.MAX_HEIGHT_Y);
-        renderer.setAxesColor(CalculatorSettings.useLightTheme(context) ? Color.BLACK : Color.GRAY);
-        renderer.setLabelsColor(CalculatorSettings.useLightTheme(context) ? Color.BLACK : Color.LTGRAY);
-        renderer.setGridColor(CalculatorSettings.useLightTheme(context) ? Color.DKGRAY : Color.DKGRAY);
-        renderer.setXLabelsColor(CalculatorSettings.useLightTheme(context) ? Color.BLACK : Color.LTGRAY);
-        renderer.setYLabelsColor(0, CalculatorSettings.useLightTheme(context) ? Color.BLACK : Color.LTGRAY);
+        renderer.setAxesColor(Color.GRAY);
+        renderer.setLabelsColor(Color.LTGRAY);
         renderer.setYLabelsAlign(Align.RIGHT);
         renderer.setXLabels(20);
         renderer.setYLabels(20);
@@ -134,15 +138,11 @@ public class Graph {
         renderer.setYAxisBold(true);
         renderer.setZoomButtonsVisible(false);
         renderer.setExternalZoomEnabled(true);
-        addSeriesRenderer(context.getResources().getColor(R.color.graph_color), renderer);
-        return renderer;
-    }
-
-    public static void addSeriesRenderer(int color, XYMultipleSeriesRenderer renderer) {
         XYSeriesRenderer r = new XYSeriesRenderer();
-        r.setColor(color);
+        r.setColor(context.getResources().getColor(R.color.graph_color));
         r.setPointStyle(PointStyle.POINT);
         r.setLineWidth(4f);
         renderer.addSeriesRenderer(r);
+        return renderer;
     }
 }

@@ -22,7 +22,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 public class CalculatorViewPager extends ViewPager {
-    private boolean mIsEnabled;
+    private boolean enabled;
 
     public CalculatorViewPager(Context context) {
         this(context, null);
@@ -30,7 +30,7 @@ public class CalculatorViewPager extends ViewPager {
 
     public CalculatorViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mIsEnabled = true;
+        this.enabled = true;
     }
 
     /**
@@ -38,14 +38,13 @@ public class CalculatorViewPager extends ViewPager {
      * children, but in order to make the calc buttons more responsive we
      * disable that here.
      */
-    @Override
     public boolean shouldDelayChildPressedState() {
         return false;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(this.mIsEnabled) {
+        if(this.enabled) {
             return super.onTouchEvent(event);
         }
 
@@ -54,7 +53,7 @@ public class CalculatorViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if(this.mIsEnabled) {
+        if(this.enabled) {
             return super.onInterceptTouchEvent(event);
         }
 
@@ -62,10 +61,10 @@ public class CalculatorViewPager extends ViewPager {
     }
 
     public void setPagingEnabled(boolean enabled) {
-        this.mIsEnabled = enabled;
+        this.enabled = enabled;
     }
 
     public boolean getPagingEnabled() {
-        return mIsEnabled;
+        return enabled;
     }
 }

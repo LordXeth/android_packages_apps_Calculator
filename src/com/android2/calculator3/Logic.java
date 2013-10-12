@@ -17,6 +17,7 @@
 package com.android2.calculator3;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.achartengine.GraphicalView;
 import org.javia.arity.Complex;
@@ -42,11 +43,9 @@ public class Logic {
     // Double.toString() for NaN
     public static final String NAN = "NaN";
 
-    public static final char MINUS = '\u2212';
+    static final char MINUS = '\u2212';
     static final char MUL = '\u00d7';
     static final char PLUS = '+';
-    static final char DIV = '\u00f7';
-    static final char POW = '^';
 
     public static final String MARKER_EVALUATE_ON_RESUME = "?";
     public static final int DELETE_MODE_BACKSPACE = 0;
@@ -55,7 +54,7 @@ public class Logic {
     CalculatorDisplay mDisplay;
     GraphicalView mGraphDisplay;
     Symbols mSymbols = new Symbols();
-    private final History mHistory;
+    private History mHistory;
     String mResult = "";
     boolean mIsError = false;
     int mLineLength = 0;
@@ -65,7 +64,7 @@ public class Logic {
     public BaseModule mBaseModule;
     public MatrixModule mMatrixModule;
 
-    private final boolean mUseRadians;
+    private boolean useRadians;
 
     final String mErrorString;
     private final String mSinString;
@@ -76,15 +75,6 @@ public class Logic {
     private final String mArctanString;
     private final String mLogString;
     private final String mLnString;
-    private final String mDetString;
-    final String mDecSeparator;
-    final String mBinSeparator;
-    final String mHexSeparator;
-    final String mDecimalPoint;
-    final String mMatrixSeparator;
-    final int mDecSeparatorDistance;
-    final int mBinSeparatorDistance;
-    final int mHexSeparatorDistance;
     final String mX;
     final String mY;
 
@@ -107,18 +97,9 @@ public class Logic {
         mArctanString = r.getString(R.string.arctan);
         mLogString = r.getString(R.string.lg);
         mLnString = r.getString(R.string.ln);
-        mDetString = r.getString(R.string.det);
-        mDecSeparator = r.getString(R.string.dec_separator);
-        mBinSeparator = r.getString(R.string.bin_separator);
-        mHexSeparator = r.getString(R.string.hex_separator);
-        mDecSeparatorDistance = r.getInteger(R.integer.dec_separator_distance);
-        mBinSeparatorDistance = r.getInteger(R.integer.bin_separator_distance);
-        mHexSeparatorDistance = r.getInteger(R.integer.hex_separator_distance);
-        mDecimalPoint = r.getString(R.string.dot);
-        mMatrixSeparator = r.getString(R.string.matrix_separator);
         mX = r.getString(R.string.X);
         mY = r.getString(R.string.Y);
-        mUseRadians = CalculatorSettings.useRadians(context);
+        useRadians = CalculatorSettings.useRadians(context);
 
         mEquationFormatter = new EquationFormatter();
         mHistory = history;
@@ -167,9 +148,6 @@ public class Logic {
     }
 
     void insert(String delta) {
-        if(!acceptInsert(delta)) {
-            clear(true);
-        }
         mDisplay.insert(delta);
         setDeleteMode(DELETE_MODE_BACKSPACE);
         mGraphModule.updateGraphCatchErrors(mGraph);
@@ -215,7 +193,6 @@ public class Logic {
 
     boolean acceptInsert(String delta) {
         return !mIsError
-                && !getText().equals(mErrorString)
                 && (getDeleteMode() == DELETE_MODE_BACKSPACE || isOperator(delta) || isPostFunction(delta) || mDisplay.getSelectionStart() != mDisplay
                         .getActiveEditText().getText().length());
     }
@@ -236,7 +213,7 @@ public class Logic {
         mGraphModule.updateGraphCatchErrors(mGraph);
     }
 
-    public void onEnter() {
+    void onEnter() {
         if(mDeleteMode == DELETE_MODE_CLEAR) {
             clearWithHistory(false); // clear after an Enter on result
         }
@@ -338,8 +315,6 @@ public class Logic {
         else if(value.re != 0 && value.im == 0) result = real;
         else if(value.re == 0 && value.im != 0) result = imaginary + "i";
         else if(value.re == 0 && value.im == 0) result = "0";
-
-        result = relocalize(result);
         return result;
     }
 
@@ -350,28 +325,21 @@ public class Logic {
     String localize(String input) {
         // Delocalize functions (e.g. Spanish localizes "sin" as "sen"). Order
         // matters for arc functions
-        input = input.replace(mArcsinString, "asin");
-        input = input.replace(mArccosString, "acos");
-        input = input.replace(mArctanString, "atan");
-        input = input.replace(mSinString, "sin");
-        input = input.replace(mCosString, "cos");
-        input = input.replace(mTanString, "tan");
-        if(!mUseRadians) {
-            input = input.replace("sin", "sind");
-            input = input.replace("cos", "cosd");
-            input = input.replace("tan", "tand");
+        input = input.replaceAll(Pattern.quote(mArcsinString), "asin");
+        input = input.replaceAll(Pattern.quote(mArccosString), "acos");
+        input = input.replaceAll(Pattern.quote(mArctanString), "atan");
+        input = input.replaceAll(mSinString, "sin");
+        input = input.replaceAll(mCosString, "cos");
+        input = input.replaceAll(mTanString, "tan");
+        if(!useRadians) {
+            input = input.replaceAll("sin", "sind");
+            input = input.replaceAll("cos", "cosd");
+            input = input.replaceAll("tan", "tand");
         }
-        input = input.replace(mLogString, "log");
-        input = input.replace(mLnString, "ln");
-        input = input.replace(mDetString, "det");
-        input = input.replace(mDecimalPoint, ".");
-        input = input.replace(mMatrixSeparator, ",");
-        return input;
-    }
-
-    String relocalize(String input) {
-        input = input.replace(",", mMatrixSeparator);
-        input = input.replace(".", mDecimalPoint);
+        input = input.replaceAll(mLogString, "log");
+        input = input.replaceAll(mLnString, "ln");
+        input = input.replaceAll(",", "");
+        input = input.replaceAll(" ", "");
         return input;
     }
 
@@ -419,7 +387,7 @@ public class Logic {
         return result;
     }
 
-    public static boolean isOperator(String text) {
+    static boolean isOperator(String text) {
         return text.length() == 1 && isOperator(text.charAt(0));
     }
 

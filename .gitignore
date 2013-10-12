@@ -1,6 +1,5 @@
 # Can ignore specific files
 .DS_Store
-Thumbs.db
 
 # Use wildcards as well
 *~
