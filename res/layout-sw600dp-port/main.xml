@@ -31,17 +31,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@android:color/transparent" >
-            <com.android2.calculator3.view.CalculatorDisplay
+            <com.android.calculator2.view.CalculatorDisplay
                 android:id="@+id/display"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 maxDigits="@integer/max_digits" >
-                <com.android2.calculator3.view.ScrollableDisplay
+                <com.android.calculator2.view.ScrollableDisplay
                     style="?display_style" />
-                <com.android2.calculator3.view.ScrollableDisplay
+                <com.android.calculator2.view.ScrollableDisplay
                     style="?display_style" />
-            </com.android2.calculator3.view.CalculatorDisplay>
+            </com.android.calculator2.view.CalculatorDisplay>
             <ImageButton android:id="@+id/overflow_menu"
                 android:layout_width="48dip"
                 android:layout_height="match_parent"
@@ -87,13 +87,13 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/history_bar_height" >
-                <com.android2.calculator3.view.CalculatorViewPager
+                <com.android.calculator2.view.CalculatorViewPager
                      android:id="@+id/smallPanelswitch"
                      android:layout_width="match_parent"
                      android:layout_height="0dp"
                      android:layout_weight="2"
                      android:layout_marginBottom="@dimen/group_padding" />
-                <com.android2.calculator3.view.CalculatorViewPager
+                <com.android.calculator2.view.CalculatorViewPager
                      android:id="@+id/largePanelswitch"
                      android:layout_width="match_parent"
                      android:layout_height="0dp"

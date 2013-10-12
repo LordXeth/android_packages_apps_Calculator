@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android2.calculator3.view.Cling
+<com.android.calculator2.view.Cling
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <FrameLayout
         android:layout_width="match_parent"
@@ -43,4 +43,4 @@
         android:layout_marginRight="10dp"
         android:layout_gravity="bottom|right"
         android:onClick="dismissHexCling" />
-</com.android2.calculator3.view.Cling>
+</com.android.calculator2.view.Cling>
