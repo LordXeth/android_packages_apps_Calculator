@@ -1,10 +1,10 @@
-# Calculator v3.4
+# Calculator v3.5.2
 
 This is my inverted XModJB
 
 Gallery:
 
-<a href="http://www.directupload.net" target="_blank"><img src="http://s14.directupload.net/images/130602/g448ai57.jpg" title="Kostenlos Bilder und Fotos hochladen"></a>
+<a href="http://www.directupload.net" target="_blank"><img src="http://s7.directupload.net/images/131011/q3m47xgq.jpg" title="Kostenlos Bilder und Fotos hochladen"></a>
 
 A calculator that tries to include graphing and matrix math without losing its simplicity. Slide left and right to access more panels.
 

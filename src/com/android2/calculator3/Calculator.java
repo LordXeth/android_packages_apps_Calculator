@@ -123,7 +123,14 @@ public class Calculator extends Activity implements Logic.Listener, OnClickListe
         // Disable IME for this application
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM, WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
+        int sliderBackground = R.color.background;
+        if(CalculatorSettings.useLightTheme(getContext())) {
+            super.setTheme(R.style.Theme_Calculator_Light);
+            sliderBackground = R.color.background_light;
+        }
+
         setContentView(R.layout.main);
+
         mPager = (CalculatorViewPager) findViewById(R.id.panelswitch);
         mSmallPager = (CalculatorViewPager) findViewById(R.id.smallPanelswitch);
         mLargePager = (CalculatorViewPager) findViewById(R.id.largePanelswitch);
@@ -142,7 +149,7 @@ public class Calculator extends Activity implements Logic.Listener, OnClickListe
         mPersist = new Persist(this);
         mPersist.load();
 
-        mHistory = mPersist.history;
+        mHistory = mPersist.mHistory;
 
         mDisplay = (CalculatorDisplay) findViewById(R.id.display);
 
@@ -163,7 +170,7 @@ public class Calculator extends Activity implements Logic.Listener, OnClickListe
             mPulldown.enableClick(true);
             mPulldown.enableTouch(false);
         }
-        mPulldown.setBackgroundResource(R.color.background);
+        mPulldown.setBackgroundResource(sliderBackground);
         mHistoryView = (ListView) mPulldown.findViewById(R.id.history);
         setUpHistory();
 
@@ -424,9 +431,8 @@ public class Calculator extends Activity implements Logic.Listener, OnClickListe
             break;
 
         case R.id.settings:
-            Intent intent = new Intent(this, Preferences.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            startActivity(new Intent(this, Preferences.class));
+            finish();
             break;
         }
         return super.onOptionsItemSelected(item);
@@ -473,6 +479,9 @@ public class Calculator extends Activity implements Logic.Listener, OnClickListe
             mSmallPager.setCurrentItem(SmallPanel.ADVANCED.getOrder());
             mLargePager.setCurrentItem(LargePanel.BASIC.getOrder());
             return true;
+        }
+        else if(keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
         }
         return super.onKeyDown(keyCode, keyEvent);
     }

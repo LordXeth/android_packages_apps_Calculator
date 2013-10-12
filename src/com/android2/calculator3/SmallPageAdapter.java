@@ -1,103 +1,63 @@
 package com.android2.calculator3;
 
-import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android2.calculator3.BaseModule.Mode;
 import com.android2.calculator3.Calculator.SmallPanel;
 import com.android2.calculator3.view.CalculatorViewPager;
 
-public class SmallPageAdapter extends PagerAdapter {
-    private View mHexPage;
-    private View mFunctionPage;
-    private View mAdvancedPage;
-    private CalculatorViewPager mParent;
-
-    private Logic mLogic;
-
-    private int count = 0;
+public class SmallPageAdapter extends CalculatorPageAdapter {
+    private final ViewGroup mHexPage;
+    private final ViewGroup mFunctionPage;
+    private final ViewGroup mAdvancedPage;
+    private final CalculatorViewPager mParent;
+    private final Logic mLogic;
+    private int mCount = 0;
 
     public SmallPageAdapter(CalculatorViewPager parent, Logic logic) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View hexPage = inflater.inflate(R.layout.hex_pad, parent, false);
-        final View functionPage = inflater.inflate(R.layout.function_pad, parent, false);
-        final View advancedPage = inflater.inflate(R.layout.advanced_pad, parent, false);
+        mHexPage = (ViewGroup) inflater.inflate(R.layout.hex_pad, parent, false);
+        mFunctionPage = (ViewGroup) inflater.inflate(R.layout.function_pad, parent, false);
+        mAdvancedPage = (ViewGroup) inflater.inflate(R.layout.advanced_pad, parent, false);
 
-        mHexPage = hexPage;
-        mFunctionPage = functionPage;
-        mAdvancedPage = advancedPage;
         mParent = parent;
         mLogic = logic;
         setOrder();
 
+        applyBannedResources(mLogic.mBaseModule.getMode());
         switch(mLogic.mBaseModule.getMode()) {
         case BINARY:
-            mHexPage.findViewById(R.id.bin).setBackgroundResource(R.color.pressed_color);
-            for(int i : mLogic.mBaseModule.bannedResourceInBinary) {
-                View v = mHexPage.findViewById(i);
-                if(v != null) v.setEnabled(false);
-            }
+            mHexPage.findViewById(R.id.bin).setSelected(true);
             break;
         case DECIMAL:
-            mHexPage.findViewById(R.id.dec).setBackgroundResource(R.color.pressed_color);
-            for(int i : mLogic.mBaseModule.bannedResourceInDecimal) {
-                View v = mHexPage.findViewById(i);
-                if(v != null) v.setEnabled(false);
-            }
+            mHexPage.findViewById(R.id.dec).setSelected(true);
             break;
         case HEXADECIMAL:
-            mHexPage.findViewById(R.id.hex).setBackgroundResource(R.color.pressed_color);
+            mHexPage.findViewById(R.id.hex).setSelected(true);
             break;
         }
     }
 
     @Override
     public int getCount() {
-        return count;
+        return mCount;
     }
 
     @Override
-    public void startUpdate(View container) {}
-
-    @Override
-    public Object instantiateItem(View container, int position) {
+    public View getViewAt(int position) {
         if(position == SmallPanel.FUNCTION.getOrder() && CalculatorSettings.functionPanel(mParent.getContext())) {
-            ((ViewGroup) container).addView(mFunctionPage);
             return mFunctionPage;
         }
         else if(position == SmallPanel.ADVANCED.getOrder() && CalculatorSettings.advancedPanel(mParent.getContext())) {
-            ((ViewGroup) container).addView(mAdvancedPage);
             return mAdvancedPage;
         }
         else if(position == SmallPanel.HEX.getOrder() && CalculatorSettings.hexPanel(mParent.getContext())) {
-            ((ViewGroup) container).addView(mHexPage);
             return mHexPage;
         }
         return null;
     }
-
-    @Override
-    public void destroyItem(View container, int position, Object object) {
-        ((ViewGroup) container).removeView((View) object);
-    }
-
-    @Override
-    public void finishUpdate(View container) {}
-
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
-    }
-
-    @Override
-    public Parcelable saveState() {
-        return null;
-    }
-
-    @Override
-    public void restoreState(Parcelable state, ClassLoader loader) {}
 
     @Override
     public void notifyDataSetChanged() {
@@ -107,18 +67,24 @@ public class SmallPageAdapter extends PagerAdapter {
     }
 
     private void setOrder() {
-        count = 0;
+        mCount = 0;
         if(CalculatorSettings.hexPanel(mParent.getContext())) {
-            SmallPanel.HEX.setOrder(count);
-            count++;
+            SmallPanel.HEX.setOrder(mCount);
+            mCount++;
         }
         if(CalculatorSettings.advancedPanel(mParent.getContext())) {
-            SmallPanel.ADVANCED.setOrder(count);
-            count++;
+            SmallPanel.ADVANCED.setOrder(mCount);
+            mCount++;
         }
         if(CalculatorSettings.functionPanel(mParent.getContext())) {
-            SmallPanel.FUNCTION.setOrder(count);
-            count++;
+            SmallPanel.FUNCTION.setOrder(mCount);
+            mCount++;
         }
+    }
+
+    private void applyBannedResources(Mode baseMode) {
+        applyBannedResourcesByPage(mLogic, mFunctionPage, baseMode);
+        applyBannedResourcesByPage(mLogic, mAdvancedPage, baseMode);
+        applyBannedResourcesByPage(mLogic, mHexPage, baseMode);
     }
 }

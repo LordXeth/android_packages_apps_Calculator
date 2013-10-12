@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
         android:title="@string/pref_panels" >
         <CheckBoxPreference
@@ -41,17 +41,26 @@
     <PreferenceCategory
         android:title="@string/pref_units" >
         <SwitchPreference
-                android:title="@string/trigUnits"
-                android:key="USE_RADIANS"
-                android:switchTextOn="@string/radians"
-                android:switchTextOff="@string/degrees"
-                android:defaultValue="@bool/USE_RADIANS" />
+            android:title="@string/trigUnits"
+            android:key="USE_RADIANS"
+            android:switchTextOn="@string/radians"
+            android:switchTextOff="@string/degrees"
+            android:defaultValue="@bool/USE_RADIANS" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_theme" >
+        <SwitchPreference
+            android:title="@string/holo"
+            android:key="THEME_STYLE"
+            android:switchTextOn="@string/holo_light"
+            android:switchTextOff="@string/holo_dark"
+            android:defaultValue="false" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_about" >
         <Preference
-                android:title="@string/app_name"
-                android:summary="@string/application_copyright"
-                android:key="ABOUT" />
+            android:title="@string/app_name"
+            android:summary="@string/application_copyright"
+            android:key="ABOUT" />
     </PreferenceCategory>
 </PreferenceScreen>
